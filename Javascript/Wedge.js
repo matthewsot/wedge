@@ -118,15 +118,17 @@ function initWedge(link, type, title, animator, exitOnEscape, doAutoPosition, op
         };
         doPositioning();
         if (type == 'img') {
+            //Some images can take a while to load, so make sure to position them once they load
             var isShownYet = false;
             $("#wedge-img").load(function () {
                 if (isShownYet) {
+                    //we don't want to mess with anything until after it's shown, since some animations rely on the margins
                     doPositioning();
                 }
             });
             animator.animateIn(overlayId, contentId, function () {
                 isShownYet = true;
-                doPositioning();
+                doPositioning(); //in case the image has already loaded
             });
         } else {
             animator.animateIn(overlayId, contentId, function () {

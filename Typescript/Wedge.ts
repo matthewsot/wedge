@@ -109,15 +109,17 @@ function initWedge(link, type, title, animator: IWedgeAnimator = new FadeAnimati
         }
         doPositioning();
         if (type == 'img') {
+            //Some images can take a while to load, so make sure to position them once they load
             var isShownYet = false;
             $("#wedge-img").load(() => {
-                if (isShownYet) { //we don't want to mess with anything until after it's shown
+                if (isShownYet) {
+                    //we don't want to mess with anything until after it's shown, since some animations rely on the margins
                     doPositioning();
                 }
             });
             animator.animateIn(overlayId, contentId, () => {
                 isShownYet = true;
-                doPositioning();
+                doPositioning(); //in case the image has already loaded
             });
         } else {
             animator.animateIn(overlayId, contentId, () => {});
