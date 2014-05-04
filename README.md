@@ -1,7 +1,6 @@
 wedge
 =====
-
-A drop-dead simple lightbox written in Typescript
+A drop-dead simple lightbox written in Typescript. [Demo](http://matthewsot.github.com/wedge/Demo)
 
 Wedge can display images, YouTube videos, and divs easily.
 
@@ -39,3 +38,8 @@ And if you don't like a default, you can customize just about any part of the li
 ```
 initWedge(link: 'some-div-id', type: 'div', title: 'title', animator: new ScaleAnimation(), exitOnEscape: true, doAutoPosition: true, opacity: 0.8, allowExit: true, overlayId: 'overlay-id', contentId: 'content-container-id');
 ```
+
+## Dependencies
+jQuery is the only requirement to use Wedge.js, which contains the basic lightbox and two animations (FadeAnimation and SlideAnimation). 
+
+If you'd like to use the animations in Animations.js (such as ScaleAnimation and RotateAnimation), you'll need to add the jquery.gsap plugin to your site. Instructions for that can be found [here](http://www.greensock.com/jquery-gsap-plugin/).
