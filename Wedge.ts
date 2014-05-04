@@ -39,13 +39,19 @@ class ScaleInAnimation implements IWedgeAnimator {
     }
 }
 
-/*
- * Displays the Wedge Lightbox.
- * link: A link to the youtube video or picture.
+/* initWedge()
+ * Displays the Wedge Lightbox
+ *
+ * link: A link to the youtube video or picture
  * title: Text displayed below the content
- * type: The type of link provided - youtube or pic
+ * type: The type of link provided - youtube, pic, or div
+ * animator: An IWedgeAnimator that controls how animations are handled
+ * exitOnEscape: Controls whether the lightbox can be exited by pressing the escape key
+ * doAutoPosition: Controls whether the lightbox is automatically centered
+ * opacity: The final opacity of the overlay
+ * allowExit: Controls whether the user is allowed to exit the lightbox
  */
-function initWedge(link, title, type, animator: IWedgeAnimator = new SimpleFadeAnimation, doAutoPosition = true, opacity = 0.9, allowExit = true, overlayId = 'wedge-overlay', contentId = 'wedge-content') {
+function initWedge(link, title, type, animator: IWedgeAnimator = new SimpleFadeAnimation, exitOnEscape = true, doAutoPosition = true, opacity = 0.9, allowExit = true, overlayId = 'wedge-overlay', contentId = 'wedge-content') {
     /*
      * Shows the overlay
      */
@@ -57,16 +63,30 @@ function initWedge(link, title, type, animator: IWedgeAnimator = new SimpleFadeA
     $(overlay).css('width', window.innerWidth);
 
     if (allowExit) {
-        $(overlay).click(() => {
+        var doExit = () => {
             animator.animateOut(overlayId, contentId, () => {
                 if (type == 'div') {
                     $('#' + link).appendTo($('body'));
                     $('#' + link).hide();
                 }
-                $(content).stop().remove();
+                $(overlay).unbind('click', doExit);
+                $(document).unbind("keyup", keyUp);
+
                 $(overlay).stop().remove();
+                $(content).stop().remove();
             });
-        });
+        }
+
+        var keyUp = (e) => { //Thanks! https://stackoverflow.com/questions/3369593/how-to-detect-escape-key-press-with-javascript
+            if (e.keyCode == 27) {
+                doExit();
+            }
+        };
+
+        $(overlay).click(doExit);
+        if (exitOnEscape) {
+            $(document).keyup(keyUp);
+        }
     }
     /*
      * Shows the content

@@ -40,14 +40,21 @@ var ScaleInAnimation = (function () {
     return ScaleInAnimation;
 })();
 
-/*
-* Displays the Wedge Lightbox.
-* link: A link to the youtube video or picture.
+/* initWedge()
+* Displays the Wedge Lightbox
+*
+* link: A link to the youtube video or picture
 * title: Text displayed below the content
-* type: The type of link provided - youtube or pic
+* type: The type of link provided - youtube, pic, or div
+* animator: An IWedgeAnimator that controls how animations are handled
+* exitOnEscape: Controls whether the lightbox can be exited by pressing the escape key
+* doAutoPosition: Controls whether the lightbox is automatically centered
+* opacity: The final opacity of the overlay
+* allowExit: Controls whether the user is allowed to exit the lightbox
 */
-function initWedge(link, title, type, animator, doAutoPosition, opacity, allowExit, overlayId, contentId) {
+function initWedge(link, title, type, animator, exitOnEscape, doAutoPosition, opacity, allowExit, overlayId, contentId) {
     if (typeof animator === "undefined") { animator = new SimpleFadeAnimation; }
+    if (typeof exitOnEscape === "undefined") { exitOnEscape = true; }
     if (typeof doAutoPosition === "undefined") { doAutoPosition = true; }
     if (typeof opacity === "undefined") { opacity = 0.9; }
     if (typeof allowExit === "undefined") { allowExit = true; }
@@ -64,16 +71,30 @@ function initWedge(link, title, type, animator, doAutoPosition, opacity, allowEx
     $(overlay).css('width', window.innerWidth);
 
     if (allowExit) {
-        $(overlay).click(function () {
+        var doExit = function () {
             animator.animateOut(overlayId, contentId, function () {
                 if (type == 'div') {
                     $('#' + link).appendTo($('body'));
                     $('#' + link).hide();
                 }
-                $(content).stop().remove();
+                $(overlay).unbind('click', doExit);
+                $(document).unbind("keyup", keyUp);
+
                 $(overlay).stop().remove();
+                $(content).stop().remove();
             });
-        });
+        };
+
+        var keyUp = function (e) {
+            if (e.keyCode == 27) {
+                doExit();
+            }
+        };
+
+        $(overlay).click(doExit);
+        if (exitOnEscape) {
+            $(document).keyup(keyUp);
+        }
     }
 
     /*
