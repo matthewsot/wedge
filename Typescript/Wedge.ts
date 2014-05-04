@@ -1,14 +1,14 @@
 /// <reference path="jquery.d.ts" />
 
 interface IWedgeAnimator {
-    animateIn(overlayId, contentId): void;
+    animateIn(overlayId, contentId, completed): void;
     animateOut(overlayId, contentId, completed): void;
 }
 
 class FadeAnimation implements IWedgeAnimator {
-    animateIn(overlayId, contentId): void {
+    animateIn(overlayId, contentId, completed): void {
         $('#' + overlayId).fadeIn('slow');
-        $('#' + contentId).animate({ opacity: 1 }, 'slow');
+        $('#' + contentId).animate({ opacity: 1 }, 'slow', completed);
     }
 
     animateOut(overlayId, contentId, completed): void {
@@ -18,7 +18,7 @@ class FadeAnimation implements IWedgeAnimator {
 }
 
 class SlideAnimation implements IWedgeAnimator {
-    animateIn(overlayId, contentId) {
+    animateIn(overlayId, contentId, completed) {
         $('#' + overlayId).fadeIn('slow');
         var content = '#' + contentId;
         var regularMarginLeft = parseInt($(content).css('margin-left').replace('px', ''));
@@ -26,7 +26,7 @@ class SlideAnimation implements IWedgeAnimator {
         $(content).animate({
             "opacity": 1,
             marginLeft: regularMarginLeft + 'px'
-    });
+        }, completed);
     }
     animateOut(overlayId, contentId, completed) {
         $('#' + overlayId).fadeOut('slow', completed);
@@ -109,14 +109,20 @@ function initWedge(link, type, title, animator: IWedgeAnimator = new FadeAnimati
         }
         doPositioning();
         if (type == 'img') {
+            var isShownYet = false;
             $("#wedge-img").load(() => {
+                if (isShownYet) { //we don't want to mess with anything until after it's shown
+                    doPositioning();
+                }
+            });
+            animator.animateIn(overlayId, contentId, () => {
+                isShownYet = true;
                 doPositioning();
-                animator.animateIn(overlayId, contentId);
             });
         } else {
-            animator.animateIn(overlayId, contentId);
+            animator.animateIn(overlayId, contentId, () => {});
         }
     } else {
-        animator.animateIn(overlayId, contentId);
+        animator.animateIn(overlayId, contentId, () => {});
     }
 }
