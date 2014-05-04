@@ -24,7 +24,7 @@ class ScaleAnimation implements IWedgeAnimator {
 }
 
 //Requires jQuery.GSAP for scale animations
-class RotationAnimation implements IWedgeAnimator {
+class RotateAnimation implements IWedgeAnimator {
     animateIn(overlayId, contentId) {
         $('#' + overlayId).fadeIn('slow');
         var content = '#' + contentId;

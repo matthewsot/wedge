@@ -26,10 +26,10 @@ var ScaleAnimation = (function () {
 })();
 
 //Requires jQuery.GSAP for scale animations
-var RotationAnimation = (function () {
-    function RotationAnimation() {
+var RotateAnimation = (function () {
+    function RotateAnimation() {
     }
-    RotationAnimation.prototype.animateIn = function (overlayId, contentId) {
+    RotateAnimation.prototype.animateIn = function (overlayId, contentId) {
         $('#' + overlayId).fadeIn('slow');
         var content = '#' + contentId;
         $(content).css('transform', 'matrix3d(0.93969, 0.34202, 0, 0, -0.34202, 0.93969, 0, 0, 0, 0, 1, -0.05, 0, 0, 0, 1)');
@@ -38,13 +38,13 @@ var RotationAnimation = (function () {
             "opacity": 1
         });
     };
-    RotationAnimation.prototype.animateOut = function (overlayId, contentId, completed) {
+    RotateAnimation.prototype.animateOut = function (overlayId, contentId, completed) {
         $('#' + overlayId).fadeOut('slow', completed);
         $('#' + contentId).animate({
             rotationZ: -20,
             "opacity": 0
         });
     };
-    return RotationAnimation;
+    return RotateAnimation;
 })();
 //# sourceMappingURL=Animations.js.map

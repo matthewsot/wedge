@@ -5,11 +5,11 @@ var FadeAnimation = (function () {
     }
     FadeAnimation.prototype.animateIn = function (overlayId, contentId) {
         $('#' + overlayId).fadeIn('slow');
-        $('#' + contentId).fadeIn('slow');
+        $('#' + contentId).animate({ opacity: 1 }, 'slow');
     };
 
     FadeAnimation.prototype.animateOut = function (overlayId, contentId, completed) {
-        $('#' + overlayId).fadeOut('slow');
+        $('#' + overlayId).fadeOut('slow', completed);
         $('#' + contentId).fadeOut('slow');
     };
     return FadeAnimation;

@@ -8,11 +8,11 @@ interface IWedgeAnimator {
 class FadeAnimation implements IWedgeAnimator {
     animateIn(overlayId, contentId): void {
         $('#' + overlayId).fadeIn('slow');
-        $('#' + contentId).fadeIn('slow');
+        $('#' + contentId).animate({ opacity: 1 }, 'slow');
     }
 
     animateOut(overlayId, contentId, completed): void {
-        $('#' + overlayId).fadeOut('slow');
+        $('#' + overlayId).fadeOut('slow', completed);
         $('#' + contentId).fadeOut('slow');
     }
 }
