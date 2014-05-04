@@ -5,7 +5,7 @@ interface IWedgeAnimator {
     animateOut(overlayId, contentId, completed): void;
 }
 
-class SimpleFadeAnimation implements IWedgeAnimator {
+class FadeAnimation implements IWedgeAnimator {
     animateIn(overlayId, contentId): void {
         $('#' + overlayId).fadeIn('slow');
         $('#' + contentId).fadeIn('slow');
@@ -13,28 +13,27 @@ class SimpleFadeAnimation implements IWedgeAnimator {
 
     animateOut(overlayId, contentId, completed): void {
         $('#' + overlayId).fadeOut('slow');
-        $('#' + contentId).fadeOut('show');
+        $('#' + contentId).fadeOut('slow');
     }
 }
 
-//Requires jQuery.GSAP for scale animations
-class ScaleInAnimation implements IWedgeAnimator {
+class SlideAnimation implements IWedgeAnimator {
     animateIn(overlayId, contentId) {
         $('#' + overlayId).fadeIn('slow');
         var content = '#' + contentId;
-        $(content).css('transform', 'matrix(0.2, 0, 0, 0.2, 0, 0)');
+        var regularMarginLeft = parseInt($(content).css('margin-left').replace('px', ''));
+        $(content).css('margin-left', (regularMarginLeft - 50) + 'px');
         $(content).animate({
-            scaleX: 1,
-            scaleY: 1,
-            "opacity": 1
-        });
+            "opacity": 1,
+            marginLeft: regularMarginLeft + 'px'
+    });
     }
     animateOut(overlayId, contentId, completed) {
         $('#' + overlayId).fadeOut('slow', completed);
+        var regularMarginLeft = parseInt($('#' + contentId).css('margin-left').replace('px', ''));
         $('#' + contentId).animate({
-            scaleX: 0.2,
-            scaleY: 0.2,
-            "opacity": 0
+            "opacity": 0,
+            marginLeft: (regularMarginLeft - 50) + 'px'
         });
     }
 }
@@ -44,14 +43,14 @@ class ScaleInAnimation implements IWedgeAnimator {
  *
  * link: A link to the youtube video or picture
  * title: Text displayed below the content
- * type: The type of link provided - youtube, pic, or div
+ * type: The type of link provided - youtube, img, or div
  * animator: An IWedgeAnimator that controls how animations are handled
  * exitOnEscape: Controls whether the lightbox can be exited by pressing the escape key
  * doAutoPosition: Controls whether the lightbox is automatically centered
  * opacity: The final opacity of the overlay
  * allowExit: Controls whether the user is allowed to exit the lightbox
  */
-function initWedge(link, title, type, animator: IWedgeAnimator = new SimpleFadeAnimation, exitOnEscape = true, doAutoPosition = true, opacity = 0.9, allowExit = true, overlayId = 'wedge-overlay', contentId = 'wedge-content') {
+function initWedge(link, type, title, animator: IWedgeAnimator = new FadeAnimation, exitOnEscape = true, doAutoPosition = true, opacity = 0.9, allowExit = true, overlayId = 'wedge-overlay', contentId = 'wedge-content') {
     /*
      * Shows the overlay
      */
@@ -96,7 +95,7 @@ function initWedge(link, title, type, animator: IWedgeAnimator = new SimpleFadeA
         case 'youtube':
             $(content).append('<iframe id="youtubeFrame" width="853" height="480" src="' + link.replace('/watch?v=', '/embed/').replace(/&.*/, '') + '" frameborder="0" allowfullscreen></iframe><h3 style="color:#A0A0A0;">' + title + '</h3>');
             break;
-        case 'pic':
+        case 'img':
             $(content).append('<img src="' + link + '" style="max-height:' + (window.innerHeight - 100) + 'px;max-width:' + (window.innerWidth - 100) + 'px;"/><h3 style="color:#A0A0A0;">' + title + '</h3>');
             break;
         case 'div':
