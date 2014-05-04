@@ -93,19 +93,30 @@ function initWedge(link, type, title, animator: IWedgeAnimator = new FadeAnimati
     $('body').append('<div id="' + contentId + '" style="text-align:center;z-index:2147483641;opacity:0;position:fixed;">');
     switch (type) {
         case 'youtube':
-            $(content).append('<iframe id="youtubeFrame" width="853" height="480" src="' + link.replace('/watch?v=', '/embed/').replace(/&.*/, '') + '" frameborder="0" allowfullscreen></iframe><h3 style="color:#A0A0A0;">' + title + '</h3>');
+            $(content).append('<iframe id="youtube-img" width="853" height="480" src="' + link.replace('/watch?v=', '/embed/').replace(/&.*/, '') + '" frameborder="0" allowfullscreen></iframe><h3 style="color:#A0A0A0;">' + title + '</h3>');
             break;
         case 'img':
-            $(content).append('<img src="' + link + '" style="max-height:' + (window.innerHeight - 100) + 'px;max-width:' + (window.innerWidth - 100) + 'px;"/><h3 style="color:#A0A0A0;">' + title + '</h3>');
+            $(content).append('<img id="wedge-img" src="' + link + '" style="max-height:' + (window.innerHeight - 100) + 'px;max-width:' + (window.innerWidth - 100) + 'px;"/><h3 style="color:#A0A0A0;">' + title + '</h3>');
             break;
         case 'div':
             $('#' + link).show();
             $(content).append($("#" + link));
     }
     if (doAutoPosition) {
-        $(content).css({ top: '50%', left: '50%', margin: '-' + ($(content).height() / 2) + 'px 0 0 -' + ($(content).width() / 2) + 'px' }); //courtesy of http://archive.plugins.jquery.com/project/autocenter
+        //this is more of a sure-fire way to do it, even if it's a bit sketcy
+        var doPositioning = () => {
+            $(content).css({ top: '50%', left: '50%', marginTop: '-' + ($(content).height() / 2) + 'px', marginLeft: '-' + ($(content).width() / 2) + 'px' });
+        }
+        doPositioning();
+        if (type == 'img') {
+            $("#wedge-img").load(() => {
+                doPositioning();
+                animator.animateIn(overlayId, contentId);
+            });
+        } else {
+            animator.animateIn(overlayId, contentId);
+        }
+    } else {
+        animator.animateIn(overlayId, contentId);
     }
-    var goodMarginLeft = $(content).css('margin-left');
-    $(content).css('margin-left', goodMarginLeft);
-    animator.animateIn(overlayId, contentId);
 }
