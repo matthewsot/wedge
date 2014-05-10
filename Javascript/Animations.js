@@ -1,4 +1,5 @@
 /// <reference path="jquery.d.ts" />
+/// <reference path="wedge.ts" />
 //Animations that require other libraries to work
 //Requires jquery.GSAP: http://www.greensock.com/jquery-gsap-plugin/
 var ScaleAnimation = (function () {
@@ -47,4 +48,3 @@ var RotateAnimation = (function () {
     };
     return RotateAnimation;
 })();
-//# sourceMappingURL=Animations.js.map

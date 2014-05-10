@@ -11,7 +11,7 @@ initWedge('img.jpg', 'img', 'Hey there!');
 
 Like animations? Wedge makes them easy -
 ```
-initWedge('https://www.youtube.com/watch?v=wZZ7oFKsKzY', 'youtube', '', new SlideInAnimation());
+initWedge('https://www.youtube.com/watch?v=wZZ7oFKsKzY', 'youtube', '', new SlideAnimation());
 ```
 
 Wedge comes with two built-in animations (FadeAnimation and SlideAnimation), but you can easily create your own:
