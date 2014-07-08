@@ -1,5 +1,4 @@
 /// <reference path="jquery.d.ts" />
-
 var FadeAnimation = (function () {
     function FadeAnimation() {
     }
@@ -52,7 +51,7 @@ var SlideAnimation = (function () {
 * allowExit: Controls whether the user is allowed to exit the lightbox
 */
 function initWedge(link, type, title, animator, exitOnEscape, doAutoPosition, opacity, allowExit, overlayId, contentId) {
-    if (typeof animator === "undefined") { animator = new FadeAnimation; }
+    if (typeof animator === "undefined") { animator = new FadeAnimation(); }
     if (typeof exitOnEscape === "undefined") { exitOnEscape = true; }
     if (typeof doAutoPosition === "undefined") { doAutoPosition = true; }
     if (typeof opacity === "undefined") { opacity = 0.9; }
@@ -65,9 +64,7 @@ function initWedge(link, type, title, animator, exitOnEscape, doAutoPosition, op
     var overlay = '#' + overlayId;
     var content = '#' + contentId;
 
-    $('body').append('<div id="' + overlayId + '" style="overflow:hidden;top:0px;left:0px;position:fixed;z-index:2147483630;opacity:' + opacity.toString() + ';background-color:#000000;display:none;" />');
-    $(overlay).css('height', window.innerHeight);
-    $(overlay).css('width', window.innerWidth);
+    $('body').append('<div id="' + overlayId + '" style="overflow:hidden;top:0px;left:0px;position:fixed;z-index:2147483630;opacity:' + opacity.toString() + ';background-color:#000000;display:none;height:100%;width:100%;" />');
 
     if (allowExit) {
         var doExit = function () {
@@ -128,7 +125,7 @@ function initWedge(link, type, title, animator, exitOnEscape, doAutoPosition, op
             });
             animator.animateIn(overlayId, contentId, function () {
                 isShownYet = true;
-                doPositioning(); //in case the image has already loaded
+                doPositioning();
             });
         } else {
             animator.animateIn(overlayId, contentId, function () {
