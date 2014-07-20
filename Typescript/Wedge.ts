@@ -127,7 +127,7 @@ class wedge {
     }
 
     static close(callback?: Function) {
-        this.animator.animateOut(wedge.overlayId, wedge.contentId, () => {
+        wedge.animator.animateOut(wedge.overlayId, wedge.contentId, () => {
             if (wedge.type == 'div') {
                 $('#' + wedge.link).appendTo($('body'));
                 $('#' + wedge.link).hide();

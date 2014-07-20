@@ -134,7 +134,7 @@ var wedge = (function () {
     };
 
     wedge.close = function (callback) {
-        this.animator.animateOut(wedge.overlayId, wedge.contentId, function () {
+        wedge.animator.animateOut(wedge.overlayId, wedge.contentId, function () {
             if (wedge.type == 'div') {
                 $('#' + wedge.link).appendTo($('body'));
                 $('#' + wedge.link).hide();
