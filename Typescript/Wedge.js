@@ -1,24 +1,24 @@
 /// <reference path="jquery.d.ts" />
 
-interface IWedgeAnimator {
-    animateIn(overlayId, contentId, completed): void;
-    animateOut(overlayId, contentId, completed): void;
-}
-
-class FadeAnimation implements IWedgeAnimator {
-    animateIn(overlayId, contentId, completed): void {
+var FadeAnimation = (function () {
+    function FadeAnimation() {
+    }
+    FadeAnimation.prototype.animateIn = function (overlayId, contentId, completed) {
         $('#' + overlayId).fadeIn('slow');
         $('#' + contentId).animate({ opacity: 1 }, 'slow', completed);
-    }
+    };
 
-    animateOut(overlayId, contentId, completed): void {
+    FadeAnimation.prototype.animateOut = function (overlayId, contentId, completed) {
         $('#' + overlayId).fadeOut('slow', completed);
         $('#' + contentId).fadeOut('slow');
-    }
-}
+    };
+    return FadeAnimation;
+})();
 
-class SlideAnimation implements IWedgeAnimator {
-    animateIn(overlayId, contentId, completed) {
+var SlideAnimation = (function () {
+    function SlideAnimation() {
+    }
+    SlideAnimation.prototype.animateIn = function (overlayId, contentId, completed) {
         $('#' + overlayId).fadeIn('slow');
         var content = '#' + contentId;
         var regularMarginLeft = parseInt($(content).css('margin-left').replace('px', ''));
@@ -27,46 +27,50 @@ class SlideAnimation implements IWedgeAnimator {
             "opacity": 1,
             marginLeft: regularMarginLeft + 'px'
         }, completed);
-    }
-    animateOut(overlayId, contentId, completed) {
+    };
+    SlideAnimation.prototype.animateOut = function (overlayId, contentId, completed) {
         $('#' + overlayId).fadeOut('slow', completed);
         var regularMarginLeft = parseInt($('#' + contentId).css('margin-left').replace('px', ''));
         $('#' + contentId).animate({
             "opacity": 0,
             marginLeft: (regularMarginLeft - 50) + 'px'
         });
+    };
+    return SlideAnimation;
+})();
+
+var wedge = (function () {
+    function wedge() {
     }
-}
-
-class wedge {
-    static animator: IWedgeAnimator;
-    static type: string;
-    static link: string;
-    static overlayId: string;
-    static contentId: string;
-
-    static keyUpHandler(e) { //Thanks! https://stackoverflow.com/questions/3369593/how-to-detect-escape-key-press-with-javascript
+    wedge.keyUpHandler = function (e) {
         if (e.keyCode == 27) {
             wedge.close();
-        }        
-    }
+        }
+    };
 
     /* initWedge()
-     * Displays the Wedge Lightbox
-     *
-     * link: A link to the youtube video or picture
-     * title: Text displayed below the content
-     * type: The type of link provided - youtube, img, or div
-     * animatorToUse: An IWedgeAnimator that controls how animations are handled
-     * exitOnEscape: Controls whether the lightbox can be exited by pressing the escape key
-     * doAutoPosition: Controls whether the lightbox is automatically centered
-     * opacity: The final opacity of the overlay
-     * allowExit: Controls whether the user is allowed to exit the lightbox
-     */
-    static show(link, type, title, animator: IWedgeAnimator = new FadeAnimation, exitOnEscape = true, doAutoPosition = true, opacity = 0.9, allowExit = true, overlayId = 'wedge-overlay', contentId = 'wedge-content') {
+    * Displays the Wedge Lightbox
+    *
+    * link: A link to the youtube video or picture
+    * title: Text displayed below the content
+    * type: The type of link provided - youtube, img, or div
+    * animatorToUse: An IWedgeAnimator that controls how animations are handled
+    * exitOnEscape: Controls whether the lightbox can be exited by pressing the escape key
+    * doAutoPosition: Controls whether the lightbox is automatically centered
+    * opacity: The final opacity of the overlay
+    * allowExit: Controls whether the user is allowed to exit the lightbox
+    */
+    wedge.show = function (link, type, title, animator, exitOnEscape, doAutoPosition, opacity, allowExit, overlayId, contentId) {
+        if (typeof animator === "undefined") { animator = new FadeAnimation; }
+        if (typeof exitOnEscape === "undefined") { exitOnEscape = true; }
+        if (typeof doAutoPosition === "undefined") { doAutoPosition = true; }
+        if (typeof opacity === "undefined") { opacity = 0.9; }
+        if (typeof allowExit === "undefined") { allowExit = true; }
+        if (typeof overlayId === "undefined") { overlayId = 'wedge-overlay'; }
+        if (typeof contentId === "undefined") { contentId = 'wedge-content'; }
         /*
-         * Shows the overlay
-         */
+        * Shows the overlay
+        */
         var overlay = '#' + overlayId;
         var content = '#' + contentId;
 
@@ -84,50 +88,53 @@ class wedge {
                 $(document).keyup(this.keyUpHandler);
             }
         }
+
         /*
-         * Shows the content
-         */
+        * Shows the content
+        */
         $('body').append('<div id="' + contentId + '" style="text-align:center;z-index:2147483641;opacity:0;position:fixed;">');
         switch (type) {
-        case 'youtube':
-            $(content).append('<iframe id="youtube-img" width="853" height="480" src="' + link.replace('/watch?v=', '/embed/').replace(/&.*/, '') + '" frameborder="0" allowfullscreen></iframe><h3 style="color:#A0A0A0;">' + title + '</h3>');
-            break;
-        case 'img':
-            $(content).append('<img id="wedge-img" src="' + link + '" style="max-height:' + (window.innerHeight - 100) + 'px;max-width:' + (window.innerWidth - 100) + 'px;"/><h3 style="color:#A0A0A0;">' + title + '</h3>');
-            break;
-        case 'div':
-            $('#' + link).show();
-            $(content).append($("#" + link));
+            case 'youtube':
+                $(content).append('<iframe id="youtube-img" width="853" height="480" src="' + link.replace('/watch?v=', '/embed/').replace(/&.*/, '') + '" frameborder="0" allowfullscreen></iframe><h3 style="color:#A0A0A0;">' + title + '</h3>');
+                break;
+            case 'img':
+                $(content).append('<img id="wedge-img" src="' + link + '" style="max-height:' + (window.innerHeight - 100) + 'px;max-width:' + (window.innerWidth - 100) + 'px;"/><h3 style="color:#A0A0A0;">' + title + '</h3>');
+                break;
+            case 'div':
+                $('#' + link).show();
+                $(content).append($("#" + link));
         }
         if (doAutoPosition) {
             //this is more of a sure-fire way to do it, even if it's a bit sketcy
-            var doPositioning = () => {
+            var doPositioning = function () {
                 $(content).css({ top: '50%', left: '50%', marginTop: '-' + ($(content).height() / 2) + 'px', marginLeft: '-' + ($(content).width() / 2) + 'px' });
-            }
+            };
             doPositioning();
             if (type == 'img') {
                 //Some images can take a while to load, so make sure to position them once they load
                 var isShownYet = false;
-                $("#wedge-img").load(() => {
+                $("#wedge-img").load(function () {
                     if (isShownYet) {
                         //we don't want to mess with anything until after it's shown, since some animations rely on the margins
                         doPositioning();
                     }
                 });
-                this.animator.animateIn(overlayId, contentId, () => {
+                this.animator.animateIn(overlayId, contentId, function () {
                     isShownYet = true;
                     doPositioning(); //in case the image has already loaded
                 });
             } else {
-                this.animator.animateIn(overlayId, contentId, () => {});
+                this.animator.animateIn(overlayId, contentId, function () {
+                });
             }
         } else {
-            this.animator.animateIn(overlayId, contentId, () => {});
+            this.animator.animateIn(overlayId, contentId, function () {
+            });
         }
-    }
+    };
 
-    static close(callback?: Function) {
-        this.animator.animateOut(wedge.overlayId, wedge.contentId, () => {
+    wedge.close = function (callback) {
+        this.animator.animateOut(wedge.overlayId, wedge.contentId, function () {
             if (wedge.type == 'div') {
                 $('#' + wedge.link).appendTo($('body'));
                 $('#' + wedge.link).hide();
@@ -141,5 +148,6 @@ class wedge {
                 callback();
             }
         });
-    }
-}
+    };
+    return wedge;
+})();
