@@ -93,19 +93,23 @@ class wedge {
             $(content).append('<iframe id="youtube-img" width="853" height="480" src="' + link.replace('/watch?v=', '/embed/').replace(/&.*/, '') + '" frameborder="0" allowfullscreen></iframe><h3 style="color:#A0A0A0;">' + title + '</h3>');
             break;
         case 'img':
-            $(content).append('<img id="wedge-img" src="' + link + '" style="max-height:' + (window.innerHeight - 100) + 'px;max-width:' + (window.innerWidth - 100) + 'px;"/><h3 style="color:#A0A0A0;">' + title + '</h3>');
+            $(content).append('<img id="wedge-img" src="' + link + '" style="max-height:' + (window.innerHeight * .80) + 'px;max-width:' + (window.innerWidth * .80) + 'px;"/><h3 style="color:#A0A0A0;">' + title + '</h3>');
             break;
         case 'div':
             $('#' + link).show();
             $(content).append($("#" + link));
         }
         if (doAutoPosition) {
-            //this is more of a sure-fire way to do it, even if it's a bit sketcy
+            //this is more of a sure-fire way to do it, even if it's a bit sketchy
             var doPositioning = () => {
                 $(content).css({ top: '50%', left: '50%', marginTop: '-' + ($(content).height() / 2) + 'px', marginLeft: '-' + ($(content).width() / 2) + 'px' });
             }
             doPositioning();
             if (type == 'img') {
+                window.onresize = function () {
+                    $("#wedge-img").css({ maxHeight: (window.innerHeight * .80) + 'px', maxWidth: (window.innerWidth * .80) + 'px'});
+                    doPositioning();
+                }
                 //Some images can take a while to load, so make sure to position them once they load
                 var isShownYet = false;
                 $("#wedge-img").load(() => {
