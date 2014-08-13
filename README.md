@@ -6,12 +6,12 @@ Wedge can display images, YouTube videos, and divs easily.
 
 To show an image with the title text "Hey there!", just use:
 ```
-initWedge('img.jpg', 'img', 'Hey there!');
+wedge.show('img.jpg', 'img', 'Hey there!');
 ```
 
 Like animations? Wedge makes them easy -
 ```
-initWedge('https://www.youtube.com/watch?v=wZZ7oFKsKzY', 'youtube', '', new SlideAnimation());
+wedge.show('https://www.youtube.com/watch?v=wZZ7oFKsKzY', 'youtube', '', new SlideAnimation());
 ```
 
 Wedge comes with two built-in animations (FadeAnimation and SlideAnimation), but you can easily create your own:
@@ -29,10 +29,10 @@ class FadeAnimation implements IWedgeAnimator {
     }
 }
 
-initWedge('some-div-id', 'div', '', new FadeAnimation());
+wedge.show('some-div-id', 'div', '', new FadeAnimation());
 ```
 
-There are even more complicated animations (like ScaleAnimation and RotateAnimation) which use separate animation libraries. You can find and use those in Animations.ts:
+There are even more complicated animations (like ScaleAnimation and RotateAnimation) which use separate animation libraries. You can find and use those in Animations.ts.
 
 And if you don't like a default, you can customize just about any part of the lightbox through parameters:
 ```
