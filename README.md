@@ -1,49 +1,66 @@
-wedge v2
-========
-With v2, Wedge has dropped Typescript.
-
 wedge
 =====
-A drop-dead simple lightbox. [Demo](http://matthewsot.github.com/wedge/Demo)
+A drop-dead simple lightbox.
 
-Wedge can display images, YouTube videos, and divs easily.
+[Demo](http://matthewsot.github.com/wedge/Demo)
 
-To show an image with the title text "Hey there!", just use:
-```
-wedge.show('img.jpg', 'img', 'Hey there!');
-```
+How to use
+==========
+To use wedge, just use wedge.show:
 
-Like animations? Wedge makes them easy -
 ```
-wedge.show('https://www.youtube.com/watch?v=wZZ7oFKsKzY', 'youtube', '', new SlideAnimation());
+wedge.show(link, options);
 ```
 
-Wedge comes with two built-in animations (FadeAnimation and SlideAnimation), but you can easily create your own:
-```
-//(Typescript)
-class FadeAnimation implements IWedgeAnimator {
-    animateIn(overlayId, contentId): void {
-        $('#' + overlayId).fadeIn('slow');
-        $('#' + contentId).fadeIn('slow');
-    }
+```options``` is an object with any number of properties, all of which are optional:
 
-    animateOut(overlayId, contentId, completed): void {
-        $('#' + overlayId).fadeOut('slow');
-        $('#' + contentId).fadeOut('slow');
+```
+wedge.options = {
+    animator: fadeAnimation, //The animation to use
+    allowExit: true, //Whether to allow exiting the wedge
+    exitOnEscape: true, //Whether pressing "Escape" should exit the wedge
+    exitOnClick: true, //Whether clicking the overlay should exit the wedge
+    title: "", //The title to be displayed below the wedge
+    type: "element", //The type of the wedge, either "element", "image", or "youtube"
+    opacity: 0.9, //The opacity of the overlay
+    autoPositionType: 1, //The auto positioner to use. 0 is none/custom, 1 is auto, and 2 is experimental
+    positioner: function() { }, //The positioner to use
+    overlayId: "wedge-overlay", //The ID to use for the overlay
+    contentId: "wedge-content" //The ID to use for the content container
+};
+```
+
+### Custom Animators
+Wedge supports custom animators. All you need to do is create an object with two function properties:
+```
+var yourAnimation = {};
+yourAnimation.animateIn = function (overlay, content, completed) {
+    //Complete the animation on $(overlay) and $(content), then call completed
+};
+
+yourAnimation.animateOut = function (overlay, content, completed) {
+    //Complete the animation on $(overlay) and $(content), then call completed
+};
+```
+
+### Types
+Wedge will attempt to auto-determine the type of link, but if you'd like to override that you can pass the ```type``` option.
+
+### Positioners
+I'd recommend leaving ``options.autoPositionerType: 1`` unless you have major problems with the positioner.
+
+If you do have problems, try ``options.autoPositionerType: 2``. To use a custom positioner, set ``options.autoPositionerType: 0`` and provide an ``options.positioner``:
+
+```
+var options = {
+    autoPositionerType: 0,
+    positioner: function (content) {
+        //position $(content) however you'd like
     }
 }
-
-wedge.show('some-div-id', 'div', '', new FadeAnimation());
-```
-
-There are even more complicated animations (like ScaleAnimation and RotateAnimation) which use separate animation libraries. You can find and use those in Animations.ts.
-
-And if you don't like a default, you can customize just about any part of the lightbox through parameters:
-```
-initWedge(link: 'some-div-id', type: 'div', title: 'title', animator: new ScaleAnimation(), exitOnEscape: true, doAutoPosition: true, opacity: 0.8, allowExit: true, overlayId: 'overlay-id', contentId: 'content-container-id');
 ```
 
 ## Dependencies
-jQuery is the only requirement to use Wedge.js, which contains the basic lightbox and two animations (FadeAnimation and SlideAnimation). 
+jQuery is the only requirement to use Wedge.js, which contains the basic lightbox and two animations (fadeAnimation and slideAnimation). 
 
-If you'd like to use the animations in Animations.js (such as ScaleAnimation and RotateAnimation), you'll need to add the jquery.gsap plugin to your site. Instructions for that can be found [here](http://www.greensock.com/jquery-gsap-plugin/).
+If you'd like to use the animations in animations.js (such as scaleAnimation and rotateAnimation), you'll need to add the jquery.gsap plugin to your site. Instructions for that can be found [here](http://www.greensock.com/jquery-gsap-plugin/).

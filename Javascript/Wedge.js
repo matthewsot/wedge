@@ -1,49 +1,37 @@
-/// <reference path="jquery.d.ts" />
+var fadeAnimation = {};
+fadeAnimation.animateIn = function (overlay, content, completed) {
+    $(overlay).fadeIn("slow");
 
-var fadeAnimation = (function () {
-    function fadeAnimation() { }
+    $(content).animate({ opacity: 1 }, "slow", completed);
+};
 
-    fadeAnimation.animateIn = function (overlay, content, completed) {
-        $(overlay).fadeIn("slow");
+fadeAnimation.animateOut = function (overlay, content, completed) {
+    $(overlay).fadeOut("slow", completed);
 
-        $(content).animate({ opacity: 1 }, "slow", completed);
-    };
+    $(content).fadeOut("slow");
+};
 
-    fadeAnimation.animateOut = function (overlay, content, completed) {
-        $(overlay).fadeOut("slow", completed);
+var slideAnimation = {};
+slideAnimation.animateIn = function (overlay, content, completed) {
+    $(overlay).fadeIn("slow");
 
-        $(content).fadeOut("slow");
-    };
+    var regularMarginLeft = parseInt($(content).css("margin-left").replace("px", ""));
+    $(content).css("margin-left", (regularMarginLeft - 50) + "px");
+    $(content).animate({
+        "opacity": 1,
+        marginLeft: regularMarginLeft + "px"
+    }, completed);
+};
 
-    return fadeAnimation;
-})();
+slideAnimation.animateOut = function (overlay, content, completed) {
+    $(overlay).fadeOut("slow", completed);
 
-var slideAnimation = (function () {
-    function slideAnimation() { }
-
-    slideAnimation.animateIn = function (overlay, content, completed) {
-        $(overlay).fadeIn("slow");
-
-        var regularMarginLeft = parseInt($(content).css("margin-left").replace("px", ""));
-        $(content).css("margin-left", (regularMarginLeft - 50) + "px");
-        $(content).animate({
-            "opacity": 1,
-            marginLeft: regularMarginLeft + "px"
-        }, completed);
-    };
-
-    slideAnimation.animateOut = function (overlay, content, completed) {
-        $(overlay).fadeOut("slow", completed);
-
-        var regularMarginLeft = parseInt($(content).css("margin-left").replace("px", ""));
-        $(content).animate({
-            "opacity": 0,
-            marginLeft: (regularMarginLeft - 50) + "px"
-        });
-    };
-
-    return slideAnimation;
-})();
+    var regularMarginLeft = parseInt($(content).css("margin-left").replace("px", ""));
+    $(content).animate({
+        "opacity": 0,
+        marginLeft: (regularMarginLeft - 50) + "px"
+    });
+};
 
 var wedge = (function () {
     function wedge() {
@@ -64,7 +52,7 @@ var wedge = (function () {
             exitOnEscape: true,
             exitOnClick: true,
             title: "",
-            type: "div",
+            type: "element",
             opacity: 0.9,
             autoPositionType: 1,
             overlayId: "wedge-overlay",
