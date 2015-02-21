@@ -48,6 +48,61 @@ var wedge = (function () {
         }
     };
 
+    wedge.link = "";
+    wedge.options = {};
+    wedge.setOptions = function (options) {
+        wedge.options = {
+            animator: fadeAnimation,
+            allowExit: true,
+            exitOnEscape: true,
+            exitOnClick: true,
+            title: "",
+            type: "div",
+            opacity: 0.9,
+            autoPositionType: 1,
+            overlayId: "wedge-overlay",
+            contentId: "wedge-content"
+        };
+
+        /*
+         * To use a custom positioner, set options.autoPositionType = 0
+         * and specify options.positioner = function (content), where content is
+         * the #wedge-content to be positioned.
+         */
+        if (typeof options.autoPositionType === "undefined") options.autoPositionType = wedge.options.autoPositionType;
+        switch (options.autoPositionType) {
+            case 0:
+                wedge.options.positioner = function() {};
+                break;
+            case 1:
+                //This is less of a "good" solution, but it doesn't mess with transforms
+                //(which is useful for the animations that do)
+                options.positioner = function(content) {
+                    $(content).css({
+                        top: "50%",
+                        left: "50%",
+                        marginTop: "-" + ($(content).height() / 2) + "px",
+                        marginLeft: "-" + ($(content).width() / 2) + "px"
+                    });
+                };
+                break;
+            case 2:
+                //This is recommended for the standard animations.
+                options.positioner = function (content) {
+                    $(content).css({
+                        top: "50%",
+                        left: "50%",
+                        transform: "translateY(-50%) translateX(-50%)"
+                    });
+                };
+                break;
+        }
+
+        for (var option in options) {
+            wedge.options[option] = options[option];
+        }
+    };
+
     /* initWedge()
     * Displays the Wedge Lightbox
     *
@@ -60,31 +115,35 @@ var wedge = (function () {
     * opacity: The final opacity of the overlay
     * allowExit: Controls whether the user is allowed to exit the lightbox
     */
-    wedge.show = function (link, type, title, animator, exitOnEscape, doAutoPosition, opacity, allowExit, overlayId, contentId) {
-        if (typeof animator === "undefined") { animator = new FadeAnimation; }
-        if (typeof exitOnEscape === "undefined") { exitOnEscape = true; }
-        if (typeof doAutoPosition === "undefined") { doAutoPosition = true; }
-        if (typeof opacity === "undefined") { opacity = 0.9; }
-        if (typeof allowExit === "undefined") { allowExit = true; }
-        if (typeof overlayId === "undefined") { overlayId = 'wedge-overlay'; }
-        if (typeof contentId === "undefined") { contentId = 'wedge-content'; }
+    wedge.show = function (link, options) {
+        if (typeof options === "undefined") options = {};
+
+        if (typeof options.type === "undefined") {
+            if (link.startsWith("#")) {
+                options.type = "element";
+            } else if (link.indexOf("youtube.com") !== -1) {
+                options.type = "youtube";
+            } else {
+                options.type = "image";
+            }
+        }
+
+        wedge.setOptions(options);
+
         /*
         * Shows the overlay
         */
-        var overlay = '#' + overlayId;
-        var content = '#' + contentId;
-
-        this.animator = animator;
         this.link = link;
         this.type = type;
         this.overlayId = overlayId;
         this.contentId = contentId;
 
-        $('body').append('<div id="' + overlayId + '" style="overflow:hidden;top:0px;left:0px;position:fixed;z-index:2147483630;opacity:' + opacity.toString() + ';background-color:#000000;display:none;height:100%;width:100%;" />');
 
-        if (allowExit) {
-            $(overlay).click(this.close);
-            if (exitOnEscape) {
+        if (wedge.options.allowExit) {
+            if (wedge.options.exitOnClick) {
+                $(overlay).click(this.close);
+            }
+            if (wedge.options.exitOnEscape) {
                 $(document).keyup(this.keyUpHandler);
             }
         }
@@ -92,10 +151,19 @@ var wedge = (function () {
         /*
         * Shows the content
         */
-        $('body').append('<div id="' + contentId + '" style="text-align:center;z-index:2147483641;opacity:0;position:fixed;">');
-        switch (type) {
-            case 'youtube':
-                $(content).append('<iframe id="youtube-img" width="853" height="480" src="' + link.replace('/watch?v=', '/embed/').replace(/&.*/, '') + '" frameborder="0" allowfullscreen></iframe><h3 style="color:#A0A0A0;">' + title + '</h3>');
+        var content = $("<div></div>", { id: wedge.options.contentId }).css({
+            textAlign: "center",
+            zIndex: "2147483641",
+            opacity: "0",
+            position: "fixed"
+        });
+
+        $("body").append(content);
+
+        switch (wedge.options.type) {
+            case "element":
+                $(content).append($(link));
+                $(link).show();
                 break;
             case 'img':
                 $(content).append('<img id="wedge-img" src="' + link + '" style="max-height:' + (window.innerHeight * .80) + 'px;max-width:' + (window.innerWidth * .80) + 'px;"/><h3 style="color:#A0A0A0;">' + title + '</h3>');
