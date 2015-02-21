@@ -1,49 +1,56 @@
 /// <reference path="jquery.d.ts" />
 
-var FadeAnimation = (function () {
-    function FadeAnimation() {
-    }
-    FadeAnimation.prototype.animateIn = function (overlayId, contentId, completed) {
-        $('#' + overlayId).fadeIn('slow');
-        $('#' + contentId).animate({ opacity: 1 }, 'slow', completed);
+var fadeAnimation = (function () {
+    function fadeAnimation() { }
+
+    fadeAnimation.animateIn = function (overlay, content, completed) {
+        $(overlay).fadeIn("slow");
+
+        $(content).animate({ opacity: 1 }, "slow", completed);
     };
 
-    FadeAnimation.prototype.animateOut = function (overlayId, contentId, completed) {
-        $('#' + overlayId).fadeOut('slow', completed);
-        $('#' + contentId).fadeOut('slow');
+    fadeAnimation.animateOut = function (overlay, content, completed) {
+        $(overlay).fadeOut("slow", completed);
+
+        $(content).fadeOut("slow");
     };
-    return FadeAnimation;
+
+    return fadeAnimation;
 })();
 
-var SlideAnimation = (function () {
-    function SlideAnimation() {
-    }
-    SlideAnimation.prototype.animateIn = function (overlayId, contentId, completed) {
-        $('#' + overlayId).fadeIn('slow');
-        var content = '#' + contentId;
-        var regularMarginLeft = parseInt($(content).css('margin-left').replace('px', ''));
-        $(content).css('margin-left', (regularMarginLeft - 50) + 'px');
+var slideAnimation = (function () {
+    function slideAnimation() { }
+
+    slideAnimation.animateIn = function (overlay, content, completed) {
+        $(overlay).fadeIn("slow");
+
+        var regularMarginLeft = parseInt($(content).css("margin-left").replace("px", ""));
+        $(content).css("margin-left", (regularMarginLeft - 50) + "px");
         $(content).animate({
             "opacity": 1,
-            marginLeft: regularMarginLeft + 'px'
+            marginLeft: regularMarginLeft + "px"
         }, completed);
     };
-    SlideAnimation.prototype.animateOut = function (overlayId, contentId, completed) {
-        $('#' + overlayId).fadeOut('slow', completed);
-        var regularMarginLeft = parseInt($('#' + contentId).css('margin-left').replace('px', ''));
-        $('#' + contentId).animate({
+
+    slideAnimation.animateOut = function (overlay, content, completed) {
+        $(overlay).fadeOut("slow", completed);
+
+        var regularMarginLeft = parseInt($(content).css("margin-left").replace("px", ""));
+        $(content).animate({
             "opacity": 0,
-            marginLeft: (regularMarginLeft - 50) + 'px'
+            marginLeft: (regularMarginLeft - 50) + "px"
         });
     };
-    return SlideAnimation;
+
+    return slideAnimation;
 })();
 
 var wedge = (function () {
     function wedge() {
     }
+
     wedge.keyUpHandler = function (e) {
-        if (e.keyCode == 27) {
+        if (e.keyCode === 27) {
             wedge.close();
         }
     };
@@ -111,6 +118,7 @@ var wedge = (function () {
     * type: The type of link provided - youtube, img, or div
     * animatorToUse: An IWedgeAnimator that controls how animations are handled
     * exitOnEscape: Controls whether the lightbox can be exited by pressing the escape key
+    * exitOnClick: Controls whether the lightbox can be exited by clicking on the overlay
     * doAutoPosition: Controls whether the lightbox is automatically centered
     * opacity: The final opacity of the overlay
     * allowExit: Controls whether the user is allowed to exit the lightbox
@@ -134,10 +142,23 @@ var wedge = (function () {
         * Shows the overlay
         */
         this.link = link;
-        this.type = type;
-        this.overlayId = overlayId;
-        this.contentId = contentId;
 
+        //Add the overlay div
+        var overlay = $("<div></div>", { id: wedge.options.overlayId })
+                .css({
+                    overflow: "hidden",
+                    top: "0",
+                    left: "0",
+                    position: "fixed",
+                    zIndex: "2147483630",
+                    opacity: wedge.options.opacity,
+                    backgroundColor: "#000000",
+                    display: "none",
+                    height: "100%",
+                    width: "100%"
+                });
+
+        $("body").append(overlay);
 
         if (wedge.options.allowExit) {
             if (wedge.options.exitOnClick) {
@@ -165,58 +186,77 @@ var wedge = (function () {
                 $(content).append($(link));
                 $(link).show();
                 break;
-            case 'img':
-                $(content).append('<img id="wedge-img" src="' + link + '" style="max-height:' + (window.innerHeight * .80) + 'px;max-width:' + (window.innerWidth * .80) + 'px;"/><h3 style="color:#A0A0A0;">' + title + '</h3>');
-                break;
-            case 'div':
-                $('#' + link).show();
-                $(content).append($("#" + link));
-        }
-        if (doAutoPosition) {
-            //this is more of a sure-fire way to do it, even if it's a bit sketchy
-            var doPositioning = function () {
-                $(content).css({ top: '50%', left: '50%', marginTop: '-' + ($(content).height() / 2) + 'px', marginLeft: '-' + ($(content).width() / 2) + 'px' });
-            };
-            doPositioning();
-            if (type == 'img') {
-                window.onresize = function () {
-                    $("#wedge-img").css({ maxHeight: (window.innerHeight * .80) + 'px', maxWidth: (window.innerWidth * .80) + 'px' });
-                    doPositioning();
-                };
+            case "youtube":
+                var tubeFrame = $("<iframe></iframe>")
+                    .attr("width", "853")
+                    .attr("height", "480")
+                    .attr("src", link.replace("/watch?v=", "/embed/").replace(/&.*/, ""))
+                    .attr("frameborder", "0")
+                    .attr("allowfullscreen", "allowfullscreen")
+                    .attr("id", "youtube-img");
 
-                //Some images can take a while to load, so make sure to position them once they load
-                var isShownYet = false;
-                $("#wedge-img").load(function () {
-                    if (isShownYet) {
-                        //we don't want to mess with anything until after it's shown, since some animations rely on the margins
-                        doPositioning();
-                    }
+                var title = $("<h3></h3>").text(wedge.options.title).css("color", "#A0A0A0");
+
+                $(content).append(tubeFrame).append(title);
+                break;
+            case "image":
+                var image = $("<img></img>")
+                    .attr("src", link)
+                    .css({
+                        maxHeight: (window.innerHeight * .80) + "px",
+                        maxWidth: (window.innerWidth * .80) + "px"
+                    }).attr("id", "wedge-img");
+
+                var title = $("<h3></h3>").text(wedge.options.title).css("color", "#A0A0A0");
+
+                $(content).append(image).append(title);
+                break;
+        }
+
+        wedge.options.positioner(content);
+
+        if (wedge.options.type === "image") {
+            window.onresize = function() {
+                $("#wedge-img").css({
+                    maxHeight: (window.innerHeight * .80) + "px",
+                    maxWidth: (window.innerWidth * .80) + "px"
                 });
-                this.animator.animateIn(overlayId, contentId, function () {
-                    isShownYet = true;
-                    doPositioning(); //in case the image has already loaded
-                });
-            } else {
-                this.animator.animateIn(overlayId, contentId, function () {
-                });
-            }
+                wedge.options.positioner(content);
+            };
+
+            //Some images can take a while to load, so make sure to position them once they load
+            var isShownYet = false;
+            $("#wedge-img").load(function() {
+                if (isShownYet) {
+                    //we don't want to mess with anything until after it's shown, since some animations rely on the margins
+                    wedge.options.positioner(content);
+                }
+            });
+            wedge.options.animator.animateIn($("#" + wedge.options.overlayId), $("#" + wedge.options.contentId), function () {
+                isShownYet = true;
+                wedge.options.positioner(content); //in case the image has already loaded
+            });
         } else {
-            this.animator.animateIn(overlayId, contentId, function () {
+            wedge.options.animator.animateIn($("#" + wedge.options.overlayId), $("#" + wedge.options.contentId), function () {
             });
         }
     };
 
     wedge.close = function (callback) {
-        wedge.animator.animateOut(wedge.overlayId, wedge.contentId, function () {
-            if (wedge.type == 'div') {
-                $('#' + wedge.link).appendTo($('body'));
-                $('#' + wedge.link).hide();
+        wedge.options.animator.animateOut($("#" + wedge.options.overlayId), $("#" + wedge.options.contentId), function () {
+            if (wedge.options.type === "element") {
+                $(wedge.link).appendTo($("body"));
+                $(wedge.link).hide();
             }
-            $('#' + wedge.overlayId).unbind('click', close);
+            var overlay = $("#" + wedge.options.overlayId);
+            var content = $("#" + wedge.options.contentId);
+
+            $(overlay).unbind("click", close);
             $(document).unbind("keyup", wedge.keyUpHandler);
 
-            $('#' + wedge.overlayId).stop().remove();
-            $('#' + wedge.contentId).stop().remove();
+            $(overlay).stop().remove();
+            $(content).stop().remove();
+
             if (typeof callback == "function") {
                 callback();
             }

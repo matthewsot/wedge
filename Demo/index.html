@@ -26,7 +26,7 @@
             <br/><br/>
             Here's a simple example, if you'd like to show an image:
             <br/><br/>
-            <button class="image" onclick="wedge.show('Images/mindblown.gif', 'img', 'Wow.')">Do it</button>
+            <button class="image" onclick="wedge.show('Images/mindblown.gif')">Do it</button>
             <br/><br/>
             <code class="image">
             </code>
@@ -34,7 +34,7 @@
             <br/><br/>
             Looks great! But what if you wanted to add an animation?
             <br/><br/>
-            <button class="animation" onclick="wedge.show('Images/mindblown.gif', 'img', 'Pretty cool', new SlideAnimation())">Do it</button>
+            <button class="animation" onclick="wedge.show('Images/mindblown.gif', { title: 'Pretty cool', animator: slideAnimation })">Do it</button>
             <br /><br />
             <code class="animation">
             </code>
@@ -42,7 +42,7 @@
             <br /><br />
             Animations can be as simple or as complicated as you want. Here's a rotation one that's available in Animations.ts:
             <br /><br />
-            <button class="rotation" onclick="wedge.show('Images/mindblownstewart.gif', 'img', 'Wow.', new RotateAnimation())">Do it</button>
+            <button class="rotation" onclick="wedge.show('Images/mindblownstewart.gif', { title: 'Wow.', animator: new rotateAnimation() })">Do it</button>
             <br /><br />
             <code class="rotation">
             </code>
@@ -50,7 +50,7 @@
             <br /><br />
             If you love Youtube, Wedge can handle that as well.
             <br /><br />
-            <button class="youtube" onclick="wedge.show('https://www.youtube.com/watch?v=wZZ7oFKsKzY', 'youtube', 'Cool!')">Do it</button>
+            <button class="youtube" onclick="wedge.show('https://www.youtube.com/watch?v=wZZ7oFKsKzY', { title: 'Cool!' })">Do it</button>
             <br /><br />
             <code class="youtube">
             </code>
@@ -64,7 +64,7 @@
             <br /><br />
             Or if you just want to show your own div, there's nothing stopping you.
             <br /><br />
-            <button class="div" onclick="wedge.show('to-show', 'div', '', new ScaleAnimation())">Do it</button>
+            <button class="div" onclick="wedge.show('#to-show', { animator: new scaleAnimation() })">Do it</button>
             <br /><br />
             <code class="div">
             </code>

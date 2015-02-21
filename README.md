@@ -1,6 +1,10 @@
+wedge v2
+========
+With v2, Wedge has dropped Typescript.
+
 wedge
 =====
-A drop-dead simple lightbox written in Typescript. [Demo](http://matthewsot.github.com/wedge/Demo)
+A drop-dead simple lightbox. [Demo](http://matthewsot.github.com/wedge/Demo)
 
 Wedge can display images, YouTube videos, and divs easily.
 
