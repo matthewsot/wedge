@@ -12,6 +12,8 @@ To use wedge, just use wedge.show:
 wedge.show(link, options);
 ```
 
+``link`` is a string, containing an element selector (like ``#id``), youtube link, or image link.
+
 ```options``` is an object with any number of properties, all of which are optional:
 
 ```
