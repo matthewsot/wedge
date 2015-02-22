@@ -63,6 +63,6 @@ var options = {
 ```
 
 ## Dependencies
-jQuery is the only requirement to use Wedge.js, which contains the basic lightbox and two animations (fadeAnimation and slideAnimation). 
+jQuery is the only requirement to use wedge, which contains the basic lightbox and two animations (fadeAnimation and slideAnimation). 
 
 If you'd like to use the animations in animations.js (such as scaleAnimation and rotateAnimation), you'll need to add the jquery.gsap plugin to your site. Instructions for that can be found [here](http://www.greensock.com/jquery-gsap-plugin/).
