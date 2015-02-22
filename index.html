@@ -2,10 +2,102 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <title>Wedge</title>
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300,400" rel="stylesheet" type="text/css">
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script type="text/javascript" src="wedge.js"></script>
+
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/gsap/1.11.6/TweenMax.min.js"></script>
+    <script type="text/javascript" src="content/scripts/jquery.gsap.min.js"></script>
+    <script type="text/javascript" src="animations.js"></script>
 </head>
-<body>
+<body style="text-align:center;font-family:'Open Sans'">
+    <!-- preload these images -->
+    <img src="images/mindblown.gif" height="1" width="1" style="opacity:0;position:absolute;top:0;left:0;" />
+    <img src="images/mindblownstewart.gif" height="1" width="1" style="opacity:0;position:absolute;top:0;left:0;" />
+
+    <h1 style="margin:20px 0 0 0;">Wedge</h1>
+    <h2 style="margin-top:5px;">
+        A simple, open-source lightbox.
+    </h2>
+
+    <p>
+        Wedge is a drop-dead-simple lightbox written in Typescript.<br />
+        You can use it to show anything from images and Youtube videos to custom divs.
+        <br /><br />
+        Here's a simple example, if you'd like to show an image:
+        <br /><br />
+        <button class="image" onclick="wedge.show('images/mindblown.gif')">Do it</button>
+        <br /><br />
+        <code class="image">
+        </code>
+
+        <br /><br />
+        Looks great! But what if you wanted to add an animation?
+        <br /><br />
+        <button class="animation" onclick="wedge.show('images/mindblown.gif', { title: 'Pretty cool', animator: slideAnimation })">Do it</button>
+        <br /><br />
+        <code class="animation">
+        </code>
+
+        <br /><br />
+        Animations can be as simple or as complicated as you want. Here's a rotation one that's available in Animations.ts:
+        <br /><br />
+        <button class="rotation" onclick="wedge.show('images/mindblownstewart.gif', { title: 'Wow.', animator: rotateAnimation })">Do it</button>
+        <br /><br />
+        <code class="rotation">
+        </code>
+
+        <br /><br />
+        If you love Youtube, Wedge can handle that as well.
+        <br /><br />
+        <button class="youtube" onclick="wedge.show('https://www.youtube.com/watch?v=wZZ7oFKsKzY', { title: 'Cool!' })">Do it</button>
+        <br /><br />
+        <code class="youtube">
+        </code>
+
+        <div id="to-show" style="display:none;color:#fff;background-color:#808080;padding:50px;">
+            <h1>This is a div!</h1>
+            <br /><br />
+            <h3>Imagine that.</h3>
+        </div>
+
+        <br /><br />
+        Or, if you just want to show your own div, there's nothing stopping you.
+        <br /><br />
+        <button class="div" onclick="wedge.show('#to-show', { animator: scaleAnimation })">Do it</button>
+        <br /><br />
+        <code class="div">
+        </code>
+
+        <br /><br /><br />
+        Like it? Using it requires just two lines of HTML:<br /><br />
+        <code style="display:block;line-height:25px;overflow:auto;">
+            <span style="color:green">&lt;!-- JQuery --&gt;</span><br />
+            &lt;script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"&gt;&lt;/script&gt;<br />
+            <span style="color:green">&lt;!-- Get this from <a href="https://github.com/matthewsot/wedge/tree/gh-pages/Javascript">Github</a> --&gt;</span><br />
+            &lt;script type="text/javascript" src="/Javascript/Wedge.js"&gt;&lt;/script&gt;
+        </code>
+
+        <br /><br />
+        Wedge.js comes with two default animations (FadeAnimation and SlideAnimation).<br />If you want to use the extra animations in Animations.js (like ScaleAnimation and RotateAnimation), you'll need three more lines:
+        <br /><br />
+        <code style="display:block;line-height:25px;overflow:auto;">
+            <span style="color:green">&lt;!-- GSAP animations library --&gt;</span><br />
+            &lt;script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/gsap/1.11.6/TweenMax.min.js"&gt;&lt;/script&gt;<br />
+            <span style="color:green">&lt;!-- jquery.gsap plugin - Get this from <a href="https://github.com/matthewsot/wedge/tree/gh-pages/Javascript">Github</a> --&gt;</span><br />
+            &lt;script type="text/javascript" src="jquery.gsap.min.js"&gt;&lt;/script&gt;<br />
+            <span style="color:green">&lt;!-- You can get this from <a href="https://github.com/matthewsot/wedge/tree/gh-pages/Javascript">Github</a> as well --&gt;</span><br />
+            &lt;script type="text/javascript" src="/Javascript/Animations.js"&gt;&lt;/script&gt;
+        </code>
+
+        <br /><br /><br />
+        Check out <a href="https://github.com/matthewsot/wedge/tree/gh-pages/Typescript">the source code</a> for more details.
+    </p>
+
     <script type="text/javascript">
-        window.location.href = 'demo/index.html';
+        $("button").each(function () {
+            $("code." + $(this).attr("class")).text($(this).attr("onclick"));
+        });
     </script>
 </body>
 </html>
