@@ -2,7 +2,7 @@ wedge
 =====
 A drop-dead simple lightbox.
 
-[Demo](http://matthewsot.github.com/wedge/Demo)
+[Demo](http://matthewsot.github.com/wedge/demo)
 
 How to use
 ==========
