@@ -49,13 +49,13 @@ yourAnimation.animateOut = function (overlay, content, completed) {
 Wedge will attempt to auto-determine the type of link, but if you'd like to override that you can pass the ```type``` option.
 
 ### Positioners
-I'd recommend leaving ``options.autoPositionerType: 1`` unless you have major problems with the positioner.
+I'd recommend leaving ``options.autoPositionType: 1`` unless you have major problems with the positioner.
 
-If you do have problems, try ``options.autoPositionerType: 2``. To use a custom positioner, set ``options.autoPositionerType: 0`` and provide an ``options.positioner``:
+If you do have problems, try ``options.autoPositionType: 2``. To use a custom positioner, set ``options.autoPositionType: 0`` and provide an ``options.positioner``:
 
 ```
 var options = {
-    autoPositionerType: 0,
+    autoPositionType: 0,
     positioner: function (content) {
         //position $(content) however you'd like
     }
